@@ -10,7 +10,7 @@ public class Main {
     private final static int TARGET_VALUE = 2020;
 
     public static void main(String[] args) throws FileNotFoundException {
-        List<Integer> input = readInputFile();
+        List<Integer> input = FileUtils.readFileAsListOfIntegers(Main.class.getClassLoader(), "input.txt");
         System.out.println(findTargetValue(input, TARGET_VALUE));
     }
 
@@ -30,15 +30,5 @@ public class Main {
             }
         }
         throw new RuntimeException("List does not contain three values that add together");
-    }
-
-    private static List<Integer> readInputFile() throws FileNotFoundException {
-
-        Scanner scanner = new Scanner(Main.class.getClassLoader().getResourceAsStream("input.txt"));
-        List<Integer> inputNumbers = new ArrayList<Integer>();
-        while(scanner.hasNext()) {
-            inputNumbers.add(scanner.nextInt());
-        }
-        return inputNumbers;
     }
 }
