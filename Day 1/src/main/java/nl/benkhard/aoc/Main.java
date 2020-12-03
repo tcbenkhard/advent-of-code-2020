@@ -10,7 +10,7 @@ public class Main {
     private final static int TARGET_VALUE = 2020;
 
     public static void main(String[] args) throws FileNotFoundException {
-        List<Integer> input = FileUtils.readFileAsListOfIntegers(Main.class.getClassLoader(), "input.txt");
+        List<Integer> input = FileUtils.readFileAsListOfIntegers("input.txt");
         System.out.println(findTargetValue(input, TARGET_VALUE));
     }
 

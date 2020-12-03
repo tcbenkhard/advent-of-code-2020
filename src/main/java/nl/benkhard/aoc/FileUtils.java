@@ -6,7 +6,8 @@ import java.util.Scanner;
 
 public class FileUtils {
 
-    public static List<Integer> readFileAsListOfIntegers(ClassLoader  loader, String filename) {
+    public static List<Integer> readFileAsListOfIntegers(String filename) {
+        ClassLoader loader = FileUtils.class.getClassLoader();
         Scanner scanner = new Scanner(loader.getResourceAsStream(filename));
         List<Integer> inputNumbers = new ArrayList<Integer>();
         while(scanner.hasNext()) {
@@ -15,7 +16,8 @@ public class FileUtils {
         return inputNumbers;
     }
 
-    public static List<String> readFileAsListOfStrings(ClassLoader loader, String filename) {
+    public static List<String> readFileAsListOfStrings(String filename) {
+        ClassLoader loader = FileUtils.class.getClassLoader();
         Scanner scanner = new Scanner(loader.getResourceAsStream(filename));
         List<String> inputStrings = new ArrayList();
         while(scanner.hasNext()) {

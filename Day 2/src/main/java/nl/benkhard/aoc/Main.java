@@ -5,7 +5,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        List<String> lines = FileUtils.readFileAsListOfStrings(Main.class.getClassLoader(), "input.txt");
+        List<String> lines = FileUtils.readFileAsListOfStrings("input.txt");
         int validPasswords = 0;
         for(String line : lines) {
             String[] splitLine = line.split(": ");

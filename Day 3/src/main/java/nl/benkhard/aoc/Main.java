@@ -16,7 +16,7 @@ public class Main {
     }
 
     private static int slope(int offsetX, int offsetY) {
-        List<String> lines = FileUtils.readFileAsListOfStrings(Main.class.getClassLoader(), "input.txt");
+        List<String> lines = FileUtils.readFileAsListOfStrings("input.txt");
         int charsInRow = lines.get(0).length();
         int treecount = 0;
         int posX = 0;
