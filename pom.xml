@@ -13,6 +13,7 @@
         <module>Day 2</module>
         <module>Day 3</module>
         <module>Day 4</module>
+        <module>Day 5</module>
     </modules>
 
     <dependencies>
