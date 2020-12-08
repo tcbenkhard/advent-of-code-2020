@@ -1,4 +1,6 @@
-package nl.benkhard.aoc;
+package nl.benkhard.aoc.instruction;
+
+import nl.benkhard.aoc.State;
 
 public class AccumulatorInstruction extends Instruction {
     public AccumulatorInstruction(Integer param) {

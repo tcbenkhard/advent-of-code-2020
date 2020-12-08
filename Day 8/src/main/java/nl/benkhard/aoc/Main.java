@@ -1,66 +1,49 @@
 package nl.benkhard.aoc;
 
+import nl.benkhard.aoc.instruction.Instruction;
+import nl.benkhard.aoc.instruction.JumpInstruction;
+import nl.benkhard.aoc.instruction.NoOpInstruction;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static nl.benkhard.aoc.instruction.Instruction.lineToInstruction;
 
 public class Main {
 
-    static Function<String, Instruction> lineToInstruction = line -> {
-        String[] instructionArray = line.split(" ");
-        switch (instructionArray[0]) {
-            case "acc":
-                return new AccumulatorInstruction(Integer.parseInt(instructionArray[1]));
-            case "jmp":
-                return new JumpInstruction(Integer.parseInt(instructionArray[1]));
-            case "nop":
-                return new NoOpInstruction(Integer.parseInt(instructionArray[1]));
-        }
-        throw new RuntimeException(String.format("Invalid command '%s'", instructionArray[0]));
-    };
-
     public static void main(String[] args) {
+        boolean run = true;
+        int corruptedIndex = 0;
+        while(run) {
+            List<Instruction> instructions = loadInstructions();
+            if(patchInstructions(instructions, corruptedIndex)) {
+                Program program = new Program(instructions);
+                if(program.execute() == 0)
+                    run = false;
+            }
+            corruptedIndex++;
+        }
+    }
+
+    private static boolean patchInstructions(List<Instruction> instructions, int index) {
+        Instruction corrupted = instructions.get(index);
+        if(corrupted instanceof NoOpInstruction) {
+            instructions.set(index, corrupted.to(JumpInstruction.class));
+            return true;
+        } else if(corrupted instanceof JumpInstruction) {
+            instructions.set(index, corrupted.to(NoOpInstruction.class));
+            return true;
+        }
+
+        return false;
+    }
+
+    private static List<Instruction> loadInstructions() {
         List<String> lines = FileUtils.readFileAsListOfStrings("input1.txt");
 
-        int instructionsSize = lines.stream()
+        return lines.stream()
                 .map(lineToInstruction)
-                .collect(Collectors.toList())
-                .size();
-
-        for(int corruptedInstructionIndex = 0; corruptedInstructionIndex< instructionsSize; corruptedInstructionIndex++) {
-            State state = new State();
-            List<Instruction> instructions = lines.stream()
-                    .map(lineToInstruction)
-                    .collect(Collectors.toList());
-
-            Instruction corruptedInstruction = instructions.get(corruptedInstructionIndex);
-            if (corruptedInstruction instanceof JumpInstruction) {
-                instructions.set(corruptedInstructionIndex, corruptedInstruction.to(NoOpInstruction.class));
-                System.out.printf("Changed instruction on index %d from %s to %s", corruptedInstructionIndex, JumpInstruction.class.getName(), NoOpInstruction.class.getName());
-            } else if (corruptedInstruction instanceof NoOpInstruction) {
-                instructions.set(corruptedInstructionIndex, corruptedInstruction.to(JumpInstruction.class));
-                System.out.printf("Changed instruction on index %d from %s to %s", corruptedInstructionIndex, NoOpInstruction.class.getName(), JumpInstruction.class.getName());
-            } else {
-                System.out.printf("%d is not a jmp or nop\n", corruptedInstructionIndex);
-                continue;
-            }
-
-            System.out.println("Starting");
-
-            while(true) {
-                if(state.getIndex() >= instructions.size()) {
-                    System.out.println("End of program reached, accumulator: "+state.getAccumulator());
-                    System.exit(0);
-                }
-                try {
-                    Instruction current = instructions.get(state.getIndex());
-                    current.execute(state);
-                } catch (InfiniteLoopException e) {
-                    System.out.println("INFINITE LOOP");
-                    break;
-                }
-            }
-        }
+                .collect(Collectors.toList());
     }
 }
