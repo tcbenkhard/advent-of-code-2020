@@ -22,6 +22,11 @@ public class Main {
         }
 
         String resource = args.length == 1 ? args[0] : DEFAULT_RESOURCE;
+        if (containsControlCharacter(resource)) {
+            error.println("Error: resource name must not contain control characters");
+            return 1;
+        }
+
         try {
             InputStream stream = Main.class.getClassLoader().getResourceAsStream(resource);
             List<Long> ratings = AdapterInput.parse(stream, resource);
@@ -39,5 +44,14 @@ public class Main {
             error.println("Error: arithmetic overflow while solving " + resource);
             return 1;
         }
+    }
+
+    private static boolean containsControlCharacter(String value) {
+        for (int index = 0; index < value.length(); index++) {
+            if (Character.isISOControl(value.charAt(index))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

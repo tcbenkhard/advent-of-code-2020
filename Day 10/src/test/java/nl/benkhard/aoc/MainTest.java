@@ -12,12 +12,10 @@ import static org.junit.Assert.assertTrue;
 
 public class MainTest {
     @Test
-    public void defaultResourcePrintsExactlyTwoLabeledAnswers() throws Exception {
+    public void defaultResourceReportsMissingProductionInputWithoutAnswers() throws Exception {
         RunResult result = run();
 
-        assertEquals(0, result.status);
-        assertEquals(lines("Part 1: 35", "Part 2: 8"), result.output);
-        assertEquals("", result.error);
+        assertFailure(result, "Resource not found: input.txt");
     }
 
     @Test
@@ -34,6 +32,19 @@ public class MainTest {
     @Test
     public void tooManyArgumentsReturnFailureWithoutAnswers() throws Exception {
         assertFailure(run("small-example.txt", "extra"), "expected at most one argument");
+    }
+
+    @Test
+    public void resourceNamesWithControlCharactersAreRejectedWithoutBeingEchoed()
+            throws Exception {
+        String hostileResource = "missing.txt\r\nForged error";
+
+        RunResult result = run(hostileResource);
+
+        assertFailure(result, "resource name must not contain control characters");
+        assertFalse(result.error.contains(hostileResource));
+        assertEquals(lines("Error: resource name must not contain control characters"),
+                result.error);
     }
 
     @Test
