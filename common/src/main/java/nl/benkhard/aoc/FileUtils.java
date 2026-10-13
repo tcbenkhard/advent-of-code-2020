@@ -19,7 +19,7 @@ public class FileUtils {
     public static List<String> readFileAsListOfStrings(String filename) {
         ClassLoader loader = FileUtils.class.getClassLoader();
         Scanner scanner = new Scanner(loader.getResourceAsStream(filename));
-        List<String> inputStrings = new ArrayList();
+        List<String> inputStrings = new ArrayList<String>();
         while(scanner.hasNext()) {
             inputStrings.add(scanner.nextLine());
         }
