@@ -22,8 +22,8 @@ public class MainTest {
     }
 
     @Test
-    public void usesBundledInputByDefault() throws Exception {
-        RunResult result = run();
+    public void printsExactLabeledAnswersForLargeSample() throws Exception {
+        RunResult result = run("large-sample.txt");
 
         assertEquals(0, result.status);
         assertEquals("Part 1: 220" + System.lineSeparator()
