@@ -12,10 +12,12 @@ import static org.junit.Assert.assertTrue;
 
 public class MainTest {
     @Test
-    public void defaultResourceReportsMissingProductionInputWithoutAnswers() throws Exception {
+    public void defaultResourcePrintsAnswersFromTestFixture() throws Exception {
         RunResult result = run();
 
-        assertFailure(result, "Resource not found: input.txt");
+        assertEquals(0, result.status);
+        assertEquals(lines("Part 1: 35", "Part 2: 8"), result.output);
+        assertEquals("", result.error);
     }
 
     @Test
@@ -37,14 +39,14 @@ public class MainTest {
     @Test
     public void resourceNamesWithControlCharactersAreRejectedWithoutBeingEchoed()
             throws Exception {
-        String hostileResource = "missing.txt\r\nForged error";
+        assertUnsafeResourceName("missing.txt\r\nForged error");
+    }
 
-        RunResult result = run(hostileResource);
-
-        assertFailure(result, "resource name must not contain control characters");
-        assertFalse(result.error.contains(hostileResource));
-        assertEquals(lines("Error: resource name must not contain control characters"),
-                result.error);
+    @Test
+    public void resourceNamesWithUnicodeLineSeparatorsAreRejectedWithoutBeingEchoed()
+            throws Exception {
+        assertUnsafeResourceName("missing.txt\u2028Forged error");
+        assertUnsafeResourceName("missing.txt\u2029Forged error");
     }
 
     @Test
@@ -71,6 +73,15 @@ public class MainTest {
         assertTrue(result.error.startsWith("Error: "));
         assertFalse(result.error.contains("Exception"));
         assertFalse(result.error.contains("\tat "));
+    }
+
+    private static void assertUnsafeResourceName(String hostileResource) throws Exception {
+        RunResult result = run(hostileResource);
+
+        assertFailure(result, "resource name must not contain control characters or line separators");
+        assertFalse(result.error.contains(hostileResource));
+        assertEquals(lines("Error: resource name must not contain control characters or line separators"),
+                result.error);
     }
 
     private static String lines(String... lines) {

@@ -22,8 +22,8 @@ public class Main {
         }
 
         String resource = args.length == 1 ? args[0] : DEFAULT_RESOURCE;
-        if (containsControlCharacter(resource)) {
-            error.println("Error: resource name must not contain control characters");
+        if (containsUnsafeCharacter(resource)) {
+            error.println("Error: resource name must not contain control characters or line separators");
             return 1;
         }
 
@@ -46,9 +46,13 @@ public class Main {
         }
     }
 
-    private static boolean containsControlCharacter(String value) {
+    private static boolean containsUnsafeCharacter(String value) {
         for (int index = 0; index < value.length(); index++) {
-            if (Character.isISOControl(value.charAt(index))) {
+            char character = value.charAt(index);
+            int characterType = Character.getType(character);
+            if (Character.isISOControl(character)
+                    || characterType == Character.LINE_SEPARATOR
+                    || characterType == Character.PARAGRAPH_SEPARATOR) {
                 return true;
             }
         }
