@@ -15,18 +15,10 @@
         <module>Day 4</module>
         <module>Day 5</module>
         <module>Day 7</module>
-        <module>untitled</module>
         <module>Day 8</module>
         <module>Day 9</module>
+        <module>Day 10</module>
     </modules>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>AdventOfCode2020</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>
